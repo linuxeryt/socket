@@ -16,11 +16,9 @@ class Server(object):
     def __init__(self, address):
         address = address
         server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
         server.bind(address)
         server.listen(5)
         server.setblocking(False)
-
         selector.register(server, EVENT_READ, self.accept)  #返回SelectorKey实例。
 
     def accept(self, server, mask):
@@ -40,14 +38,15 @@ class Server(object):
             selector.unregister(conn)
             conn.close()
 
+            
 def loop():
     while True:
         events = selector.select()
-
         for key, mask in events:
             callback = key.data
             callback(key.fileobj, mask)
 
+            
 if __name__ == '__main__':
     address = ('', int(sys.argv[1]))
     server = Server(address)
