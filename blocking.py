@@ -14,14 +14,12 @@ HOST, PORT = '', 8080
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.bind((HOST, PORT))
 sock.listen(1)
-sock.setblocking(0)
 print('Server {} listen on {}'.format(HOST, PORT))
 
 while True:
     '''接收多个TCP连接。但是需要前一个连接处理完才能接收下一个连接
     '''
     conn, addr = sock.accept()
-    conn.setblocking(0)
     print('Connection from ', addr)
 
     while True:
@@ -34,6 +32,7 @@ while True:
             '''
             conn.sendall(b'Send content can not null.\r\n')
         elif data == b'exit\r\n':
+            conn.close()    #注意，这里需要断开连接。否则最后一个连接exit时，将无法退出。
             break
         else:
             conn.sendall(data)
